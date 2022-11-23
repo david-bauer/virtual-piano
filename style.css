@@ -1,0 +1,189 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+
+    background-color:#FFCFFA;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+
+    font-family: 'Tangerine', serif;
+}
+
+
+.piano {
+    flex-shrink: 1;
+    position: relative;
+
+    transform: skew(-15deg, 10deg);
+
+    --num-keys: 7;
+    --white-key-width: calc(80vmax / var(--num-keys));
+    --black-key-width: calc(var(--white-key-width) / 3);
+    --key-height: 40vmin;
+
+    --shadow-color: 286deg 36% 56%;
+    --shadow-elevation-low:
+            0.5px 0.5px 0.8px hsl(var(--shadow-color) / 0.34),
+            0.7px 0.8px 1.2px -1.2px hsl(var(--shadow-color) / 0.34),
+            1.8px 1.8px 2.9px -2.5px hsl(var(--shadow-color) / 0.34);
+    --border: 1px solid #BBBBBB;
+}
+
+.white-keys {
+    --key-color: aliceblue;
+
+    display: flex;
+    height: var(--key-height);
+    width: calc(var(--num-keys) * var(--white-key-width));
+}
+
+.black-keys {
+    --key-color: #1c1c1c;
+
+    display: flex;
+    align-items: stretch;
+    /* position black keys between white keys */
+    gap: calc(var(--white-key-width) - var(--black-key-width));
+
+    position: absolute;
+    top: calc(-1 * var(--black-key-width) / 2);
+    /* 1st black key is centered on the right border of the 1st white key*/
+    left: calc(var(--white-key-width) - var(--black-key-width));
+
+    height: calc( 2 * var(--key-height) / 3);
+    width: calc((var(--num-keys) - 2) * var(--white-key-width) + var(--black-key-width));
+}
+
+.key {
+    display:flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    text-align: center;
+    font-weight: bolder;
+    font-family: "Adobe Devanagari", serif;
+    cursor: pointer;
+
+
+    transition: transform 100ms ease-out;
+}
+
+.key[aria-pressed='true'] {
+    --move-dist: calc(var(--black-key-width) / 10);
+    transform-origin: top;
+    transform: translate3d(var(--move-dist), var(--move-dist), 0);
+}
+
+
+.white-key {
+    flex-basis: var(--white-key-width);
+    background-color: var(--key-color);
+    color: #1c1c1c;
+    font-size: 2em;
+
+    /* allows ::before and ::after to align correctly */
+    position: relative;
+    border-left: var(--border);
+    border-bottom: var(--border);
+}
+
+.white-key::before {
+    content: '';
+    width: var(--black-key-width);
+    height:100%;
+
+    position: absolute;
+    top: 0;
+    left: calc(var(--white-key-width));
+
+    transform-origin: left;
+    transform: skewY(45deg);
+
+    background-color: var(--key-color);
+    box-shadow: var(--shadow-elevation-low);
+}
+
+.white-key:last-child {
+    border-right: var(--border);
+}
+
+.white-key:last-child::before {
+    z-index: 1;
+    border-bottom:var(--border);
+}
+
+.white-key::after {
+    content: '';
+    width: calc(var(--white-key-width) + 1px);
+    height: var(--black-key-width);
+
+    position: absolute;
+    bottom: calc(-1 * var(--black-key-width));
+
+    transform-origin: top;
+    transform: skewX(45deg);
+
+    background-color: var(--key-color);
+    box-shadow: var(--shadow-elevation-low);
+    border-left: var(--border);
+}
+
+.black-key {
+    position: relative;
+    flex-basis: var(--black-key-width);
+    background-color: var(--key-color);
+    color: aliceblue;
+    font-size: 1.5em;
+}
+
+.black-key:nth-of-type(3n) {
+    /* there is no black key between the 3rd and 4th white keys*/
+    margin-left: var(--white-key-width);
+}
+
+.black-key::before {
+    content: '';
+    width: calc(var(--black-key-width) / 2);
+    height: 100%;
+
+    position: absolute;
+    top: 0;
+    left: calc(var(--black-key-width));
+
+    transform-origin: left;
+    transform: skewY(45deg);
+
+    background-color: var(--key-color);
+    box-shadow: var(--shadow-elevation-low);
+}
+
+.black-key::after {
+    content: '';
+    width: calc(var(--black-key-width));
+    height: calc(var(--black-key-width) / 2);
+
+    position: absolute;
+    bottom: calc(-1 * var(--black-key-width) / 2);
+
+    transform-origin: top;
+    transform: skewX(45deg);
+
+    background-color: var(--key-color);
+    box-shadow: var(--shadow-elevation-low);
+}
+
+.error {
+    background-color: crimson;
+}
+
+@media (max-aspect-ratio: 1/1) {
+    .piano {
+        transform: rotate(90deg);
+    }
+}
